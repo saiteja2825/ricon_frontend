@@ -1,0 +1,1131 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Ricon Technology Career & Learning Ecosystem API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: stats
+    description: Platform statistics
+  - name: students
+    description: Student management
+  - name: courses
+    description: Course management
+  - name: internships
+    description: Internship management
+  - name: applications
+    description: Internship applications
+  - name: testimonials
+    description: Testimonials
+  - name: placements
+    description: Placement records
+  - name: roadmaps
+    description: Career roadmaps
+  - name: chat
+    description: AI career assistant
+  - name: admin
+    description: Admin analytics
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /stats:
+    get:
+      operationId: getPlatformStats
+      tags: [stats]
+      summary: Get platform-wide statistics
+      responses:
+        "200":
+          description: Platform stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformStats"
+
+  /students:
+    get:
+      operationId: listStudents
+      tags: [students]
+      summary: List all students
+      responses:
+        "200":
+          description: List of students
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Student"
+    post:
+      operationId: createStudent
+      tags: [students]
+      summary: Register a new student
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+
+  /students/{id}:
+    get:
+      operationId: getStudent
+      tags: [students]
+      summary: Get a student by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Student
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateStudent
+      tags: [students]
+      summary: Update a student
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+
+  /courses:
+    get:
+      operationId: listCourses
+      tags: [courses]
+      summary: List all courses
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [ongoing, upcoming, all]
+        - name: category
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Course"
+    post:
+      operationId: createCourse
+      tags: [courses]
+      summary: Create a new course (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CourseInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+
+  /courses/{id}:
+    get:
+      operationId: getCourse
+      tags: [courses]
+      summary: Get a course by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Course
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateCourse
+      tags: [courses]
+      summary: Update a course
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CourseUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+
+  /courses/summary:
+    get:
+      operationId: getCoursesSummary
+      tags: [courses]
+      summary: Get courses grouped by category with enrollment counts
+      responses:
+        "200":
+          description: Courses summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoursesSummary"
+
+  /internships:
+    get:
+      operationId: listInternships
+      tags: [internships]
+      summary: List all internship projects
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of internships
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Internship"
+    post:
+      operationId: createInternship
+      tags: [internships]
+      summary: Create a new internship project (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InternshipInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Internship"
+
+  /internships/{id}:
+    get:
+      operationId: getInternship
+      tags: [internships]
+      summary: Get an internship by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Internship
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Internship"
+        "404":
+          description: Not found
+
+  /applications:
+    get:
+      operationId: listApplications
+      tags: [applications]
+      summary: List all internship applications
+      parameters:
+        - name: studentId
+          in: query
+          schema:
+            type: integer
+        - name: internshipId
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Application"
+    post:
+      operationId: createApplication
+      tags: [applications]
+      summary: Submit an internship application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+
+  /applications/{id}:
+    get:
+      operationId: getApplication
+      tags: [applications]
+      summary: Get an application by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Application
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+    patch:
+      operationId: updateApplication
+      tags: [applications]
+      summary: Update application status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+
+  /testimonials:
+    get:
+      operationId: listTestimonials
+      tags: [testimonials]
+      summary: List all testimonials / success stories
+      responses:
+        "200":
+          description: List of testimonials
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Testimonial"
+    post:
+      operationId: createTestimonial
+      tags: [testimonials]
+      summary: Create a testimonial
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestimonialInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Testimonial"
+
+  /placements:
+    get:
+      operationId: listPlacements
+      tags: [placements]
+      summary: List placement records
+      responses:
+        "200":
+          description: List of placements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Placement"
+    post:
+      operationId: createPlacement
+      tags: [placements]
+      summary: Add a placement record (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlacementInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Placement"
+
+  /placements/summary:
+    get:
+      operationId: getPlacementsSummary
+      tags: [placements]
+      summary: Get placement stats (highest, average packages, counts)
+      responses:
+        "200":
+          description: Placement summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlacementsSummary"
+
+  /roadmaps:
+    get:
+      operationId: listRoadmaps
+      tags: [roadmaps]
+      summary: List all career roadmaps
+      responses:
+        "200":
+          description: List of roadmaps
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Roadmap"
+
+  /roadmaps/{id}:
+    get:
+      operationId: getRoadmap
+      tags: [roadmaps]
+      summary: Get a roadmap by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Roadmap
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Roadmap"
+        "404":
+          description: Not found
+
+  /chat:
+    post:
+      operationId: sendChatMessage
+      tags: [chat]
+      summary: Send a message to the AI career assistant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatMessageInput"
+      responses:
+        "200":
+          description: AI response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatResponse"
+
+  /admin/dashboard:
+    get:
+      operationId: getAdminDashboard
+      tags: [admin]
+      summary: Get admin dashboard overview (revenue, enrollments, activity)
+      responses:
+        "200":
+          description: Admin dashboard data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminDashboard"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+
+    PlatformStats:
+      type: object
+      properties:
+        totalStudents:
+          type: integer
+        activeCourses:
+          type: integer
+        internshipsAvailable:
+          type: integer
+        placementSuccessRate:
+          type: number
+        studentsPlaced:
+          type: integer
+        courseCompletions:
+          type: integer
+      required:
+        - totalStudents
+        - activeCourses
+        - internshipsAvailable
+        - placementSuccessRate
+        - studentsPlaced
+        - courseCompletions
+
+    Student:
+      type: object
+      properties:
+        id:
+          type: integer
+        fullName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        college:
+          type: string
+        degree:
+          type: string
+        graduationYear:
+          type: integer
+        skills:
+          type: ["string", "null"]
+        interests:
+          type: ["string", "null"]
+        role:
+          type: string
+          enum: [student, mentor, admin]
+        avatarUrl:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - fullName
+        - email
+        - phone
+        - college
+        - degree
+        - graduationYear
+        - role
+        - createdAt
+
+    StudentInput:
+      type: object
+      properties:
+        fullName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        college:
+          type: string
+        degree:
+          type: string
+        graduationYear:
+          type: integer
+        skills:
+          type: string
+        interests:
+          type: string
+        role:
+          type: string
+          enum: [student, mentor, admin]
+        avatarUrl:
+          type: string
+      required:
+        - fullName
+        - email
+        - phone
+        - college
+        - degree
+        - graduationYear
+
+    StudentUpdate:
+      type: object
+      properties:
+        fullName:
+          type: string
+        phone:
+          type: string
+        college:
+          type: string
+        degree:
+          type: string
+        graduationYear:
+          type: integer
+        skills:
+          type: string
+        interests:
+          type: string
+        avatarUrl:
+          type: string
+
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        status:
+          type: string
+          enum: [ongoing, upcoming]
+        duration:
+          type: string
+        level:
+          type: string
+          enum: [beginner, intermediate, advanced]
+        enrollmentCount:
+          type: integer
+        price:
+          type: number
+        imageUrl:
+          type: ["string", "null"]
+        tags:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - title
+        - description
+        - category
+        - status
+        - duration
+        - level
+        - enrollmentCount
+        - price
+        - createdAt
+
+    CourseInput:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        status:
+          type: string
+          enum: [ongoing, upcoming]
+        duration:
+          type: string
+        level:
+          type: string
+          enum: [beginner, intermediate, advanced]
+        price:
+          type: number
+        imageUrl:
+          type: string
+        tags:
+          type: string
+      required:
+        - title
+        - description
+        - category
+        - status
+        - duration
+        - level
+        - price
+
+    CourseUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        status:
+          type: string
+          enum: [ongoing, upcoming]
+        duration:
+          type: string
+        level:
+          type: string
+          enum: [beginner, intermediate, advanced]
+        price:
+          type: number
+        imageUrl:
+          type: string
+        tags:
+          type: string
+
+    CoursesSummary:
+      type: object
+      properties:
+        totalCourses:
+          type: integer
+        ongoingCount:
+          type: integer
+        upcomingCount:
+          type: integer
+        byCategory:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryCount"
+      required:
+        - totalCourses
+        - ongoingCount
+        - upcomingCount
+        - byCategory
+
+    CategoryCount:
+      type: object
+      properties:
+        category:
+          type: string
+        count:
+          type: integer
+        totalEnrollments:
+          type: integer
+      required:
+        - category
+        - count
+        - totalEnrollments
+
+    Internship:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        duration:
+          type: string
+        stipend:
+          type: ["string", "null"]
+        skills:
+          type: string
+        mentorName:
+          type: ["string", "null"]
+        openings:
+          type: integer
+        imageUrl:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - title
+        - description
+        - category
+        - duration
+        - skills
+        - openings
+        - createdAt
+
+    InternshipInput:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        duration:
+          type: string
+        stipend:
+          type: string
+        skills:
+          type: string
+        mentorName:
+          type: string
+        openings:
+          type: integer
+        imageUrl:
+          type: string
+      required:
+        - title
+        - description
+        - category
+        - duration
+        - skills
+        - openings
+
+    Application:
+      type: object
+      properties:
+        id:
+          type: integer
+        studentId:
+          type: integer
+        internshipId:
+          type: integer
+        status:
+          type: string
+          enum: [applied, approved, allocated, reviewing, completed, rejected]
+        appliedAt:
+          type: string
+        studentName:
+          type: ["string", "null"]
+        internshipTitle:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+      required:
+        - id
+        - studentId
+        - internshipId
+        - status
+        - appliedAt
+
+    ApplicationInput:
+      type: object
+      properties:
+        studentId:
+          type: integer
+        internshipId:
+          type: integer
+        notes:
+          type: string
+      required:
+        - studentId
+        - internshipId
+
+    ApplicationUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [applied, approved, allocated, reviewing, completed, rejected]
+        notes:
+          type: string
+
+    Testimonial:
+      type: object
+      properties:
+        id:
+          type: integer
+        studentName:
+          type: string
+        college:
+          type: string
+        content:
+          type: string
+        rating:
+          type: integer
+        outcome:
+          type: ["string", "null"]
+        company:
+          type: ["string", "null"]
+        avatarUrl:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - studentName
+        - college
+        - content
+        - rating
+        - createdAt
+
+    TestimonialInput:
+      type: object
+      properties:
+        studentName:
+          type: string
+        college:
+          type: string
+        content:
+          type: string
+        rating:
+          type: integer
+        outcome:
+          type: string
+        company:
+          type: string
+        avatarUrl:
+          type: string
+      required:
+        - studentName
+        - college
+        - content
+        - rating
+
+    Placement:
+      type: object
+      properties:
+        id:
+          type: integer
+        studentName:
+          type: string
+        college:
+          type: string
+        company:
+          type: string
+        role:
+          type: string
+        packageLpa:
+          type: number
+        year:
+          type: integer
+        avatarUrl:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - studentName
+        - college
+        - company
+        - role
+        - packageLpa
+        - year
+        - createdAt
+
+    PlacementInput:
+      type: object
+      properties:
+        studentName:
+          type: string
+        college:
+          type: string
+        company:
+          type: string
+        role:
+          type: string
+        packageLpa:
+          type: number
+        year:
+          type: integer
+        avatarUrl:
+          type: string
+      required:
+        - studentName
+        - college
+        - company
+        - role
+        - packageLpa
+        - year
+
+    PlacementsSummary:
+      type: object
+      properties:
+        highestPackageLpa:
+          type: number
+        averagePackageLpa:
+          type: number
+        studentsPlaced:
+          type: integer
+        topCompanies:
+          type: array
+          items:
+            type: string
+      required:
+        - highestPackageLpa
+        - averagePackageLpa
+        - studentsPlaced
+        - topCompanies
+
+    Roadmap:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+          enum: [mtech, fullstack, aiml, dsa, placement]
+        steps:
+          type: string
+        icon:
+          type: ["string", "null"]
+        color:
+          type: ["string", "null"]
+      required:
+        - id
+        - title
+        - description
+        - type
+        - steps
+
+    ChatMessageInput:
+      type: object
+      properties:
+        message:
+          type: string
+        studentId:
+          type: ["integer", "null"]
+      required:
+        - message
+
+    ChatResponse:
+      type: object
+      properties:
+        reply:
+          type: string
+        suggestions:
+          type: array
+          items:
+            type: string
+      required:
+        - reply
+        - suggestions
+
+    AdminDashboard:
+      type: object
+      properties:
+        totalRevenue:
+          type: number
+        monthlyRevenue:
+          type: number
+        totalStudents:
+          type: integer
+        newStudentsThisMonth:
+          type: integer
+        activeCourses:
+          type: integer
+        activeInternships:
+          type: integer
+        pendingApplications:
+          type: integer
+        placementRate:
+          type: number
+        revenueBySource:
+          type: array
+          items:
+            $ref: "#/components/schemas/RevenueSource"
+        recentActivity:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActivityItem"
+      required:
+        - totalRevenue
+        - monthlyRevenue
+        - totalStudents
+        - newStudentsThisMonth
+        - activeCourses
+        - activeInternships
+        - pendingApplications
+        - placementRate
+        - revenueBySource
+        - recentActivity
+
+    RevenueSource:
+      type: object
+      properties:
+        source:
+          type: string
+        amount:
+          type: number
+        percentage:
+          type: number
+      required:
+        - source
+        - amount
+        - percentage
+
+    ActivityItem:
+      type: object
+      properties:
+        type:
+          type: string
+        description:
+          type: string
+        timestamp:
+          type: string
+      required:
+        - type
+        - description
+        - timestamp
