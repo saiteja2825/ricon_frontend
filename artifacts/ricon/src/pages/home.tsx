@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { useGetPlatformStats, useListTestimonials } from "@workspace/api-client-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
+import type { Variants } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -73,21 +74,21 @@ const features = [
   },
 ];
 
-const subtextVariant = {
+const subtextVariant: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: { 
     opacity: 1, 
     y: 0, 
-    transition: { duration: 0.8, ease: "easeOut", delay: 1.6 } 
+    transition: { duration: 0.8, ease: [0.25, 0.1, 0.25, 1], delay: 1.6 } 
   }
 };
 
-const ctasVariant = {
+const ctasVariant: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: { 
     opacity: 1, 
     y: 0, 
-    transition: { duration: 0.8, ease: "easeOut", delay: 1.8 } 
+    transition: { duration: 0.8, ease: [0.25, 0.1, 0.25, 1], delay: 1.8 } 
   }
 };
 
@@ -142,7 +143,7 @@ export default function Home() {
             <motion.h1
               initial={{ filter: "blur(8px)", opacity: 0.4 }}
               animate={{ filter: "blur(0px)", opacity: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 1.2 }}
+              transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1], delay: 1.2 }}
               className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-6 leading-[1.05]"
             >
               The{" "}
@@ -161,7 +162,7 @@ export default function Home() {
                   transition={{ 
                     duration: 1.4,
                     times: [0, 0.4, 0.7, 1],
-                    ease: ["easeIn", "easeOut", "easeIn"],
+                    ease: [[0.42, 0, 1, 1], [0.25, 0.1, 0.25, 1], [0.42, 0, 1, 1]],
                     delay: 0.2 
                   }}
                 >
@@ -177,7 +178,7 @@ export default function Home() {
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 dark:via-primary/30 to-transparent skew-x-12"
                   initial={{ x: "-100%" }}
                   animate={{ x: "200%" }}
-                  transition={{ duration: 1, ease: "easeInOut", delay: 1.4 }}
+                  transition={{ duration: 1, ease: [0.42, 0, 0.58, 1], delay: 1.4 }}
                 />
               </span>
               </span>{" "}
@@ -261,7 +262,7 @@ export default function Home() {
             animate={{ y: ["0%", "-50%"] }}
             transition={{
               duration: 15,
-              ease: "linear",
+              ease: "linear" as const,
               repeat: Infinity,
             }}
           >
